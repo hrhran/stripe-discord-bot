@@ -51,6 +51,7 @@ const listenHook = asyncHandler(async (req, res) => {
             user.endDate= null
             await user.save()
             if(user.discord_id !== ''){
+                const guild = client.guilds.cache.get(process.env.GUILD_ID);
                 const inServer = await guild.members.fetch(user.discord_id)
                 inServer.roles.remove(process.env.ROLE_ID)
             }
