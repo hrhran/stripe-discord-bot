@@ -44,7 +44,7 @@ client.on("ready", (c) => {
           message.author.send(`Account unlinked from: ${user.email}`)
           client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} is now unlinked from ${message.author.toString()}`)
         }else{
-          message.author.send(`Account current not linked to any e-mail adress.`)
+          message.author.send(`Account currently not linked to any e-mail adress.`)
         }
       }
       if(inServer){
