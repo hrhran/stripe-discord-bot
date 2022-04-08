@@ -52,7 +52,7 @@ const listenHook = asyncHandler(async (req, res) => {
             await user.save()
             if(user.discord_id !== ''){
                 const inServer = await guild.members.fetch(user.discord_id)
-                inServer.roles.remove(process.env.SERVER_ID)
+                inServer.roles.remove(process.env.ROLE_ID)
             }
             client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} 's subscription period has ended.`)
           }
@@ -77,9 +77,9 @@ const listenHook = asyncHandler(async (req, res) => {
             }
             await user.save()
             if(data.cancel_at_period_end){
-                client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has cancelled their subscription - ends on ${user.endDate.toString()}.`)
+                client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has cancelled their subscription - ends on ${user.endDate.toString().split('+')[0]}.`)
             }else{
-                client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has started their next billing cycle till ${user.endDate.toString()}.`)
+                client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has started their next billing cycle till ${user.endDate.toString().split('+')[0]}.`)
             }
           }
           break;

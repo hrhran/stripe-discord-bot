@@ -38,26 +38,38 @@ client.on("ready", (c) => {
       if(inServer){
         const email = message.content;
         if(validateEmail(email)){
-          const user = await User.findOne({email:email});
-            if(user){
-              if(user.discord_id === message.author.id){
-                message.author.send(`This e-mail is already active with your account.`)
-              }else if(user.discord_id !== ''){
-                message.author.send(`E-mail currently active with a discord account.`)
-              }else{
-                user.discord_id = message.author.id;
-                user.save()
-                if(user.subscribed === false){
-                  message.author.send(`Failed. Make sure your e-mail is subscribed to our service.`)
+          try{
+            const hasRole = guild.members.cache
+            .get(message.author.id).roles.cache
+            .some(role => role.name === 'test');
+            console.log(hasRole)
+            if(!hasRole){
+              const user = await User.findOne({email:email});
+              if(user){
+                if(user.discord_id === message.author.id){
+                  message.author.send(`This e-mail is already active with your account.`)
+                }else if(user.discord_id !== ''){
+                  message.author.send(`E-mail already associated with a discord account.`)
                 }else{
-                  inServer.roles.add(process.env.SERVER_ID)
-                  message.author.send(`${message.author.toString()} Your account is active now! You will be able to access everything in discord server.`)
-                  client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} is now linked to ${message.author.toString()}`)
+                  user.discord_id = message.author.id;
+                  user.save()
+                  if(user.subscribed === false){
+                    message.author.send(`Failed. Make sure your e-mail is subscribed to our service.`)
+                  }else{
+                    inServer.roles.add(process.env.ROLE_ID)
+                    message.author.send(`${message.author.toString()} Your account is active now! You will be able to access everything in discord server.`)
+                    client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} is now linked to ${message.author.toString()}`)
+                  }
                 }
+              }else{
+                  message.author.send(`Failed. Please check your e-mail address.`) 
               }
             }else{
-                message.author.send(`Failed. Please check your e-mail address.`) 
+              message.author.send(`Your account is already active.`) 
             }
+          }catch(err){
+            console.log(err)
+          }
         }
       }
       // USER_ID = '123123123';
