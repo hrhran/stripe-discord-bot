@@ -21,6 +21,7 @@ const listenHook = asyncHandler(async (req, res) => {
     console.log(event.type, data)
     switch (event.type) {
       case 'customer.created':{
+        client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${data.email} has signed up.`)
         console.log(JSON.stringify(data))
         break
       }
