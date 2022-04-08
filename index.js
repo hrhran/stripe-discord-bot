@@ -15,7 +15,7 @@ app.use(cors())
 app.use('/api/bot/stripehook',bodyParser.raw({ type: 'application/json' }))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use('/api/bot', require('./routes/stripeRoutes'))
+app.use('/bot', require('./routes/stripeRoutes'))
 app.listen(port, () => console.log(`Backend running on localhost:${port}`))
 
 
