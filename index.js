@@ -12,7 +12,7 @@ const client = require("./config/bot")
 const app = express()
 
 app.use(cors())
-app.use('/api/bot/stripehook',bodyParser.raw({ type: 'application/json' }))
+app.use('/bot/stripehook',bodyParser.raw({ type: 'application/json' }))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use('/bot', require('./routes/stripeRoutes'))
