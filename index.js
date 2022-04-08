@@ -35,6 +35,15 @@ client.on("ready", (c) => {
       const inServer = await guild.members.fetch(message.author.id).catch(() => {
         message.author.send("You must be part of tradewithMAK server.")
       })
+      if(message.content === "unlink"){
+        const user = await User.findOne({discord_id: message.author.id});
+        if(user){
+          user.discord_id=''
+          user.save()
+          inServer.roles.remove(process.env.ROLE_ID)
+          client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} is now unlinked from ${message.author.toString()}`)
+        }
+      }
       if(inServer){
         const email = message.content;
         if(validateEmail(email)){
@@ -51,11 +60,11 @@ client.on("ready", (c) => {
                 }else if(user.discord_id !== ''){
                   message.author.send(`E-mail already associated with a discord account.`)
                 }else{
-                  user.discord_id = message.author.id;
-                  user.save()
                   if(user.subscribed === false){
                     message.author.send(`Failed. Make sure your e-mail is subscribed to our service.`)
                   }else{
+                    user.discord_id = message.author.id;
+                    user.save()
                     inServer.roles.add(process.env.ROLE_ID)
                     message.author.send(`${message.author.toString()} Your account is active now! You will be able to access everything in discord server.`)
                     client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} is now linked to ${message.author.toString()}`)
