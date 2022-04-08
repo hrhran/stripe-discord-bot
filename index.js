@@ -41,7 +41,10 @@ client.on("ready", (c) => {
           user.discord_id=''
           user.save()
           inServer.roles.remove(process.env.ROLE_ID)
+          message.author.send(`Account unlinked from: ${user.email}`)
           client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} is now unlinked from ${message.author.toString()}`)
+        }else{
+          message.author.send(`Account current not linked to any e-mail adress.`)
         }
       }
       if(inServer){
