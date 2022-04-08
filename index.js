@@ -52,6 +52,7 @@ client.on("ready", (c) => {
                 }else{
                   inServer.roles.add(process.env.SERVER_ID)
                   message.author.send(`${message.author.toString()} Your account is active now! You will be able to access everything in discord server.`)
+                  client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} is now linked to ${message.author.toString()}`)
                 }
               }
             }else{

@@ -77,9 +77,9 @@ const listenHook = asyncHandler(async (req, res) => {
             }
             await user.save()
             if(data.cancel_at_period_end){
-                client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has cancelled their subscription - ends on ${user.endDate.toString().split('T')[0]}.`)
+                client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has cancelled their subscription - ends on ${user.endDate.toString()}.`)
             }else{
-                client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has started their next billing cycle - ends on ${user.endDate.toString().split('T')[0]}.`)
+                client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has started their next billing cycle till ${user.endDate.toString()}.`)
             }
           }
           break;
