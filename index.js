@@ -61,20 +61,20 @@ client.on("ready", (c) => {
                 if(user.discord_id === message.author.id){
                   message.author.send(`This e-mail is already active with your account.`)
                 }else if(user.discord_id !== ''){
-                  message.author.send(`E-mail already associated with a discord account.`)
+                  message.author.send(`E-mail already associated with a different discord account.`)
                 }else{
                   if(user.subscribed === false){
-                    message.author.send(`Failed. Make sure your e-mail is subscribed to our service.`)
+                    message.author.send(`Please enter your e-mail again after completing your payment. If you have any further queries, please message in any public channel of tradewithmak discord server, our moderators will help you.`)
                   }else{
                     user.discord_id = message.author.id;
                     user.save()
                     inServer.roles.add(process.env.ROLE_ID)
-                    message.author.send(`${message.author.toString()} Your account is active now! You will be able to access everything in discord server.`)
+                    message.author.send(`${message.author.toString()} Your discord account is active now! You will be able to access everything in discord server. This e-mail address is now linked with your discord account. `)
                     client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} is now linked to ${message.author.toString()}`)
                   }
                 }
               }else{
-                  message.author.send(`Failed. Please check your e-mail address.`) 
+                  message.author.send(`We could not find any account with your email. If you have any further queries, please message in any public channel of tradewithmak discord server, our moderators will help you.`) 
               }
             }else{
               message.author.send(`Your account is already active.`) 
