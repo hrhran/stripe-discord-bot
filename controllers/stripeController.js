@@ -75,6 +75,8 @@ const listenHook = asyncHandler(async (req, res) => {
             } else if (data.status === 'active') {
               user.inTrial = false
             }
+            console.log(user.endDate)
+            console.log(data.current_period_end * 1000)
             if(data.cancel_at_period_end){
               client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has cancelled their subscription - ends on ${user.endDate.toString().split('+')[0]}.`)
             }else if(user.endDate === new Date(data.current_period_end * 1000) && !data.cancel_at_period_end){
