@@ -30,6 +30,25 @@ client.on("ready", (c) => {
   client.on("messageCreate", async (message) => {
     if (message.author.bot) return;
     if (message.author.id === client.user.id) return;
+    
+    if (message.channelId === process.env.LOG_CHANNEL_ID) {
+      const args = message.content.split(" ");
+      const command = args.shift().toLowerCase();
+      if(command === 'whois'){
+        if (!args.length)
+          return message.channel.send(`Provide valid argument, ${message.author}!`);
+        if(validateEmail(args[0])){
+          const user = await User.findOne({email:args[0]});
+          if(user)
+            return message.channel.send(`${message.author},\nEmail:${user.email}\nSubscribed:${(user.subscribed)?"Yes":"No"}\nName:${user.name}\n`);
+          else 
+          return message.channel.send(`No such user in database.`);
+        }
+      }
+    }
+ 
+
+
     if (message.channel.type === "DM") {
       const guild = client.guilds.cache.get(process.env.GUILD_ID);
       const inServer = await guild.members.fetch(message.author.id).catch(() => {
@@ -61,7 +80,7 @@ client.on("ready", (c) => {
                 if(user.discord_id === message.author.id){
                   message.author.send(`This e-mail is already active with your account.`)
                 }else if(user.discord_id !== ''){
-                  message.author.send(`E-mail already associated with a different discord account.`)
+                  message.author.send(`E-mail already associated with a different discord account. If you have any further queries, please message in any public channel of tradewithmak discord server, our moderators will help you.`)
                 }else{
                   if(user.subscribed === false){
                     message.author.send(`Please enter your e-mail again after completing your payment. If you have any further queries, please message in any public channel of tradewithmak discord server, our moderators will help you.`)
@@ -84,25 +103,12 @@ client.on("ready", (c) => {
           }
         }
       }
-      // USER_ID = '123123123';
-      // if (guild.member(USER_ID)) {
-        
-      // }
+
     }
   })
 
 });
 
-// client.on("messageCreate", (message) => {
-//   if (message.author.bot) return;
-
-//   const commandBody = message.content.slice(prefix.length);
-//   const args = commandBody.split(" ");
-//   const command = args.shift().toLowerCase();
-
-//   if (message.channelId === process.env.SOURCE_CHANNEL_ID) {
-//   }
-// });
 
 client.login(process.env.DISCORD_TOKEN);
 

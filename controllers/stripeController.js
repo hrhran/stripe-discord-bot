@@ -70,22 +70,21 @@ const listenHook = asyncHandler(async (req, res) => {
           const user = await User.findOne({ billingID: data.customer })
           const isOnTrial = data.status === 'trialing'
           if(user){
+            const prevDate = user.endDate;
             if (isOnTrial) {
               user.inTrial = true
             } else if (data.status === 'active') {
               user.inTrial = false
             }
-            console.log(user.endDate)
-            console.log(data.current_period_end * 1000)
-            if(data.cancel_at_period_end){
-              client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has cancelled their subscription - ends on ${user.endDate.toString().split('+')[0]}.`)
-            }else if(new Date(user.endDate).getTime() === data.current_period_end * 1000 && !data.cancel_at_period_end){
-              client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has decided to renew/continue their subscription - ends on ${user.endDate.toString().split('+')[0]}.`)
-            }else{
-              client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has started their next billing cycle till ${user.endDate.toString().split('+')[0]}.`)
-            }
             user.endDate = new Date(data.current_period_end * 1000)
             await user.save()
+            if(data.cancel_at_period_end){
+              client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has cancelled their subscription - ends on ${user.endDate.toString().split('+')[0]}.`)
+            }else if(new Date(prevDate).getTime() === data.current_period_end * 1000 && !data.cancel_at_period_end){
+              client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has decided to renew/continue their subscription - ends on ${user.endDate.toString().split('+')[0]}.`)
+            }else{
+              client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has started their next billing period till ${user.endDate.toString().split('+')[0]}.`)
+            }
           }
           break;
         }catch(err){
