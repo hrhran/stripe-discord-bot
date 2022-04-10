@@ -40,7 +40,7 @@ client.on("ready", (c) => {
         if(validateEmail(args[0])){
           const user = await User.findOne({email:args[0]});
           if(user)
-            return message.channel.send(`${message.author},\nEmail:${user.email}\nSubscribed:${(user.subscribed)?"Yes":"No"}\nName:${user.name}\n`);
+            return message.channel.send(`${message.author},\n**Email:** ${user.email}\n**Subscribed:** ${(user.subscribed)?"Yes":"No"}\n**In Trial:** ${(user.inTrial)?"Yes":"No"}\n**Discord:** ${(user.discord_id!=='')?"<@"+user.discord_id+">":"Not linked"}\n**Name:** ${user.name}\n`);
           else 
           return message.channel.send(`No such user in database.`);
         }
