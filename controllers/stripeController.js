@@ -22,7 +22,7 @@ const listenHook = asyncHandler(async (req, res) => {
     switch (event.type) {
       case 'customer.created':{
         try{
-          setTimeout(()=>{
+          setTimeout(async()=>{
             const user = await User.findOne({ email: data.email })
             if(user)
               client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${data.email} has signed up.`)
