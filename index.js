@@ -23,6 +23,7 @@ const prefix = "-";
 
 client.on("ready", (c) => {
   console.log(`Ready! Logged in as ${c.user.tag}`);
+  const guild = client.guilds.cache.get(process.env.GUILD_ID);
 //     client.users.fetch("302120394243047426").then(dm => {
 //     dm.send('Message to send')
 // })
@@ -39,18 +40,21 @@ client.on("ready", (c) => {
           return message.channel.send(`Provide valid argument, ${message.author}!`);
         if(validateEmail(args[0])){
           const user = await User.findOne({email:args[0]});
-          if(user)
-            return message.channel.send(`${message.author},\n**Email:** ${user.email}\n**Subscribed:** ${(user.subscribed)?"Yes":"No"}\n**In Trial:** ${(user.inTrial)?"Yes":"No"}\n**Discord:** ${(user.discord_id!=='')?"<@"+user.discord_id+">":"Not linked"}\n**Name:** ${user.name}\n**Twitter:** ${(user.twitter!=='')?user.twitter:"null"}\n**Exp:** ${user.experience}\n**Acc size:** ${user.acc_size}`);
+          if(user){
+            const isUser = client.users.cache.get(user.discord_id)
+            return message.channel.send(`${message.author},\n**Email:** ${user.email}\n**Subscribed:** ${(user.subscribed)?"Yes":"No"}\n**In Trial:** ${(user.inTrial)?"Yes":"No"}\n**Discord Acc:** ${(user.discord_id!=='')?"<@"+user.discord_id+">":"Not linked"+"\n**Discord Tag**: "+isUser?isUser.tag:"-"}\n**Name:** ${user.name}\n**Twitter:** ${(user.twitter!=='')?user.twitter:"null"}\n**Exp:** ${user.experience}\n**Acc size:** ${user.acc_size}`);
+          }
           else 
-          return message.channel.send(`No such user in database.`);
+            return message.channel.send(`No such user in database.`);
+        }else{
+
         }
       }
     }
  
 
-
     if (message.channel.type === "DM") {
-      const guild = client.guilds.cache.get(process.env.GUILD_ID);
+      
       const inServer = await guild.members.fetch(message.author.id).catch(() => {
         message.author.send("You must be part of tradewithMAK server.")
       })
