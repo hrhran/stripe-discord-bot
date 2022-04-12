@@ -42,7 +42,7 @@ client.on("ready", (c) => {
           const user = await User.findOne({email:args[0]});
           if(user){
             const isUser = client.users.cache.get(user.discord_id)
-            return message.channel.send(`${message.author},\n**Email:** ${user.email}\n**Subscribed:** ${(user.subscribed)?"Yes":"No"}\n**In Trial:** ${(user.inTrial)?"Yes":"No"}\n**Discord Acc:** ${(user.discord_id!=='')?"<@"+user.discord_id+">":"Not linked"+"\n**Discord Tag**: "+isUser?isUser.tag:"-"}\n**Name:** ${user.name}\n**Twitter:** ${(user.twitter!=='')?user.twitter:"null"}\n**Exp:** ${user.experience}\n**Acc size:** ${user.acc_size}`);
+            return message.channel.send(`${message.author},\n**Email:** ${user.email}\n**Subscribed:** ${(user.subscribed)?"Yes":"No"}\n**In Trial:** ${(user.inTrial)?"Yes":"No"}\n**Discord Acc:** ${(user.discord_id!=='')?"<@"+user.discord_id+">"+"\n**Discord Tag**: "+isUser?isUser.tag:"-":"Not linked"}\n**Name:** ${user.name}\n**Twitter:** ${(user.twitter!=='')?user.twitter:"null"}\n**Exp:** ${user.experience}\n**Acc size:** ${user.acc_size}`);
           }
           else 
             return message.channel.send(`No such user in database.`);
