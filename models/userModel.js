@@ -16,7 +16,7 @@ const userSchema = mongoose.Schema(
     },
     twitter:{
         type: String,
-        required: [true, 'Please add a twitter username'],
+        //required: [true, 'Please add a twitter username'],
     },
     from:{
         type:String,
@@ -56,6 +56,10 @@ const userSchema = mongoose.Schema(
     },
     endDate: { type: Date,
        default: null,
+   },
+   pow: {
+    type: Number,
+    default: 0
    }
   },
   {
