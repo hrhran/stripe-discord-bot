@@ -46,8 +46,25 @@ client.on("ready", (c) => {
           }
           else 
             return message.channel.send(`No such user in database.`);
-        }else{
-
+        }else if(args.join(" ").match(/^((.+?)#\d{4})/)){
+          try{
+            console.log(args.join(" "))
+            guild.members.fetch().then((member) => {
+              member.forEach(async (m)=> {
+                if (m.user.username+"#"+m.user.discriminator=== args.join(" ")) {
+                  const user = await User.findOne({discord_id:m.user.id})
+                  if(user){
+                    const isUser = client.users.cache.get(user.discord_id)
+                    return message.channel.send(`${message.author},\n**Email:** ${user.email}\n**Subscribed:** ${(user.subscribed)?"Yes":"No"}\n**In Trial:** ${(user.inTrial)?"Yes":"No"}\n**Discord Acc:** ${(user.discord_id!=='')?"<@"+user.discord_id+">":"Not linked"}${(isUser && user.discord_id!=='')?"\n**Discord Tag**: "+isUser.tag:""}\n**Name:** ${user.name}\n**Twitter:** ${(user.twitter!=='')?user.twitter:"null"}\n**Exp:** ${user.experience}\n**Acc size:** ${user.acc_size}`);
+                  }
+                  else
+                    return message.channel.send(`No linked account found for the user.`);
+                }
+              })              
+            })
+          }catch(err){
+            console.log(err)
+          }
         }
       }
     }
