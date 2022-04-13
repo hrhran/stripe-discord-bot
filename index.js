@@ -127,6 +127,9 @@ client.on("ready", (c) => {
 
     }
   })
+  client.on('guildMemberAdd', member => {
+    member.send(`${member.toString()}, Welcome to the tradewithMAK server!\nTo access all features, subscribe to our service here: **test.tradewithmak.com/signup**\n\nPlease enter your email address here once you're subscribed:`);
+ });
 
 });
 
