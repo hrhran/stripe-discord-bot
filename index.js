@@ -31,7 +31,7 @@ client.on("ready", (c) => {
   client.on("messageCreate", async (message) => {
     if (message.author.bot) return;
     if (message.author.id === client.user.id) return;
-    
+
     if (message.channelId === process.env.LOG_CHANNEL_ID) {
       const args = message.content.split(" ");
       const command = args.shift().toLowerCase();
@@ -44,7 +44,7 @@ client.on("ready", (c) => {
             const isUser = client.users.cache.get(user.discord_id)
             return message.channel.send(`${message.author},\n**Email:** ${user.email}\n**Subscribed:** ${(user.subscribed)?"Yes":"No"}\n**In Trial:** ${(user.inTrial)?"Yes":"No"}\n**Discord Acc:** ${(user.discord_id!=='')?"<@"+user.discord_id+">":"Not linked"}${(isUser && user.discord_id!=='')?"\n**Discord Tag**: "+isUser.tag:""}\n**Name:** ${user.name}\n**Twitter:** ${(user.twitter!=='')?user.twitter:"null"}\n**Exp:** ${user.experience}\n**Acc size:** ${user.acc_size}`);
           }
-          else 
+          else
             return message.channel.send(`No such user in database.`);
         }else if(args.join(" ").match(/^((.+?)#\d{4})/)){
           try{
@@ -60,7 +60,7 @@ client.on("ready", (c) => {
                   else
                     return message.channel.send(`No linked account found for the user.`);
                 }
-              })              
+              })
             })
           }catch(err){
             console.log(err)
@@ -68,10 +68,10 @@ client.on("ready", (c) => {
         }
       }
     }
- 
+
 
     if (message.channel.type === "DM") {
-      
+
       const inServer = await guild.members.fetch(message.author.id).catch(() => {
         message.author.send("You must be part of tradewithMAK server.")
       })
@@ -101,23 +101,27 @@ client.on("ready", (c) => {
                 if(user.discord_id === message.author.id){
                   message.author.send(`This e-mail is already active with your account.`)
                 }else if(user.discord_id !== ''){
-                  message.author.send(`E-mail already associated with a different discord account. If you have any further queries, please message in any public channel of tradewithmak discord server, our moderators will help you.`)
+                  message.author.send(`E-mail already associated with a different discord account. If you have any further queries, please message in #lounge-support of tradewithmak discord server, our moderators will help you.`)
                 }else{
                   if(user.subscribed === false){
-                    message.author.send(`Please enter your e-mail again after completing your payment. If you have any further queries, please message in any public channel of tradewithmak discord server, our moderators will help you.`)
+                    message.author.send(`Please enter your e-mail again after completing your payment. If you have any further queries, please message in #lounge-support of tradewithmak discord server, our moderators will help you.`)
                   }else{
                     user.discord_id = message.author.id;
                     user.save()
                     inServer.roles.add(process.env.ROLE_ID)
-                    message.author.send(`${message.author.toString()} Your discord account is active now! You will be able to access everything in discord server. This e-mail address is now linked with your discord account. `)
+                    message.author.send(`${message.author.toString()} Your discord account is active now! You will be able to `+
+                    `access everything in discord server. This e-mail address is now linked with your discord account. `)
                     client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} is now linked to ${message.author.toString()}`)
                   }
                 }
               }else{
-                  message.author.send(`We could not find any account with your email. If you have any further queries, please message in any public channel of tradewithmak discord server, our moderators will help you.`) 
+                  message.author.send(`We could not find any account with your e-mail address. In order to access all features, `+
+                    `please subscribe to our service here:\ntest.tradewithmak.com/signup\n\nIf `+
+                    `you have any further inquiries, please post a message in the #lounge-support `+
+                    `channel or email us at contact@tradewithMAK.com; one of our moderators will help you. `)
               }
             }else{
-              message.author.send(`Your account is already active.`) 
+              message.author.send(`Your account is already active.`)
             }
           }catch(err){
             console.log(err)
@@ -128,7 +132,7 @@ client.on("ready", (c) => {
     }
   })
   client.on('guildMemberAdd', member => {
-    member.send(`${member.toString()}, Welcome to the tradewithMAK server!\nTo access all features, subscribe to our service here: **test.tradewithmak.com/signup**\n\nPlease enter your email address here once you're subscribed:`);
+    member.send(`${member.toString()}, welcome to the tradewithMAK server!\Please share your e-mail address by replying to this message:`);
  });
 
 });
