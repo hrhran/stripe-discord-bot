@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
 const client = require('../config/bot')
 const stripe = require('stripe')
+const mailUser = require('../helpers/mailUser')
 
 const Stripe = stripe(
   process.env.STRIPE_SECRET_KEY, {
@@ -24,9 +25,13 @@ const listenHook = asyncHandler(async (req, res) => {
         try{
           setTimeout(async()=>{
             const user = await User.findOne({ email: data.email })
-            if(user)
+            if(user){
               client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${data.email} has signed up.`)
+              mailUser.sendWelcomeMail(user)
+            }
+              
             console.log(JSON.stringify(data))
+            
           },2000)
         }catch(err){
           console.log(err)

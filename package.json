@@ -17,6 +17,7 @@
     "express": "^4.17.3",
     "express-async-handler": "^1.2.0",
     "mongoose": "^6.2.3",
+    "nodemailer": "^6.7.3",
     "stripe": "^8.215.0"
   }
 }

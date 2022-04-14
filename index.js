@@ -132,7 +132,7 @@ client.on("ready", (c) => {
     }
   })
   client.on('guildMemberAdd', member => {
-    member.send(`${member.toString()}, welcome to the tradewithMAK server!\Please share your e-mail address by replying to this message:`);
+    member.send(`${member.toString()}, welcome to the tradewithMAK server!\nPlease share your e-mail address by replying to this message:`);
  });
 
 });
