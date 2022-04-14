@@ -27,11 +27,8 @@ const listenHook = asyncHandler(async (req, res) => {
             const user = await User.findOne({ email: data.email })
             if(user){
               client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${data.email} has signed up.`)
-              mailUser.sendWelcomeMail(user)
-            }
-              
+            }  
             console.log(JSON.stringify(data))
-            
           },2000)
         }catch(err){
           console.log(err)
@@ -47,6 +44,7 @@ const listenHook = asyncHandler(async (req, res) => {
             user.inTrial = true
             user.endDate = new Date(data.current_period_end * 1000)
             await user.save()
+            mailUser.sendWelcomeMail(user)
             client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has started their trial period - ends on ${user.endDate.toString().split('+')[0]}.`)
           }
           break
