@@ -6,7 +6,7 @@ const sendWelcomeMail= (user) =>{
         user.email,
       ];
       transporter.sendMail({
-        from: "mongodb343@gmail.com",
+        from: "contact@tradewithmak.com",
         to: mailList,
         subject: `Welcome to tradewithMAK`,
         html: constants.welcomeMail(user),
@@ -19,7 +19,7 @@ const sendCancelMail= (user) =>{
         user.email,
       ];
       transporter.sendMail({
-        from: "mongodb343@gmail.com",
+        from: "contact@tradewithmak.com",
         to: mailList,
         subject: `Subscription Ended`,
         html: constants.cancelMail(user),

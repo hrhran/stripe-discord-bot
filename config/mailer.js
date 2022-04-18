@@ -4,8 +4,8 @@ module.exports = nodemailer.createTransport({
   port: 587,
   auth: {
     //sending from a Gmail account
-    user: "mongodb343@gmail.com",
-    pass: "Mongo@2022",
+    user: "contact@tradewithmak.com",
+    pass: "ibrsdvjcwaumzrig",
   },
 });
 
