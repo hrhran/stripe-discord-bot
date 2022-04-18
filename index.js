@@ -93,7 +93,7 @@ client.on("ready", (c) => {
           try{
             const hasRole = guild.members.cache
             .get(message.author.id).roles.cache
-            .some(role => role.name === 'test');
+            .some(role => role.name === 'paid');
             console.log(hasRole)
             if(!hasRole){
               const user = await User.findOne({email:email});
