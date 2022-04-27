@@ -116,7 +116,7 @@ client.on("ready", (c) => {
                 }
               }else{
                   message.author.send(`We could not find any account with your e-mail address. In order to access all features, `+
-                    `please subscribe to our service here:\ntest.tradewithmak.com/signup\n\nIf `+
+                    `please subscribe to our service here:\ndashboard.tradewithmak.com/signup\n\nIf `+
                     `you have any further inquiries, please post a message in the #lounge-support `+
                     `channel or email us at contact@tradewithMAK.com; one of our moderators will help you. `)
               }
