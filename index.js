@@ -6,7 +6,9 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const port = process.env.PORT || 5005
-const client = require("./config/bot")
+const client = require("./config/bot");
+const { off } = require("./models/userModel");
+const e = require("express");
 
 
 const app = express()
@@ -64,6 +66,52 @@ client.on("ready", (c) => {
             })
           }catch(err){
             console.log(err)
+          }
+        }
+      }
+
+      if(command === 'link'){
+        const temp = args.splice(1,args.length)
+        const disc_id = temp.join(" ")
+        if(validateEmail(args[0])){
+          const user = await User.findOne({email:args[0]});
+          if(user){
+            guild.members.fetch().then((member) => {
+              let flag = false
+              member.forEach(async (m)=> {
+                if (m.user.username+"#"+m.user.discriminator=== disc_id) {
+                  user.discord_id = m.user.id;
+                  user.save()
+                  flag = true
+                  return message.channel.send(`Successfully linked.`);
+                }
+              })
+              if(!flag){
+                return message.channel.send(`User has to be in the discord server.`);
+              }
+            })
+          }else{
+            return message.channel.send(`User not found for the given e-mail.`);
+          }
+        }else{
+          return message.channel.send(`Not a valid e-mail address.`);
+        }
+      }
+
+
+      if(command === 'unlink'){
+          if(validateEmail(args[0])){
+            const user = await User.findOne({email: args[0]});
+            if(user){
+              if(user.discord_id===''){
+                return message.channel.send(`User not linked to any discord account`)
+              }else{
+                user.discord_id=''
+                user.save()
+                return message.channel.send(`Account unlinked from: ${user.email}`)
+              }
+          }else{
+              return message.channel.send(`User not found for the given e-mail.`)
           }
         }
       }
