@@ -82,6 +82,10 @@ client.on("ready", (c) => {
                 if (m.user.username+"#"+m.user.discriminator=== disc_id) {
                   user.discord_id = m.user.id;
                   user.save()
+                  try{
+                  if(user.subscribed){
+                    m.roles.add(process.env.ROLE_ID)
+                  }}catch(err){console.log(err)}
                   flag = true
                   return message.channel.send(`Successfully linked.`);
                 }
@@ -106,6 +110,10 @@ client.on("ready", (c) => {
               if(user.discord_id===''){
                 return message.channel.send(`User not linked to any discord account`)
               }else{
+                try{
+                const inServer = await guild.members.fetch(user.discord_id)
+                inServer.roles.remove(process.env.ROLE_ID)
+                }catch(err){console.log(err)}
                 user.discord_id=''
                 user.save()
                 return message.channel.send(`Account unlinked from: ${user.email}`)
