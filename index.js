@@ -69,7 +69,31 @@ client.on("ready", (c) => {
         }
       }
 
+      if(command === 'whoare'){
+        if (!args.length)
+          return message.channel.send(`Provide valid argument, ${message.author}!`);
+        if(args[0]==="trialing"){
+          try{
+            const res = await User.find({inTrial:true});
+            if(res.length){
+                let str=''
+                for(let i = 0; i < res.length; i++) {
+                    str += res[i].email + ' - ' + ((res[i].discord_id)?'<@'+res[i].discord_id+'>':'Not Linked') + '\n'
+                  }
+                  return message.channel.send(`${message.author}, Trial Users:\n${str}`);
+            }
+            else{
+              return message.channel.send(`No members are currently trialing, ${message.author}!`);
+            } 
+          }catch(err){
+            return message.channel.send(`Error while fetching data, ${message.author}!`);
+          }   
+        }
+      }
+
       if(command === 'link'){
+        if (!args.length)
+          return message.channel.send(`Provide valid argument, ${message.author}!`);
         const temp = args.splice(1,args.length)
         const disc_id = temp.join(" ")
         if(validateEmail(args[0])){
@@ -103,6 +127,8 @@ client.on("ready", (c) => {
 
 
       if(command === 'unlink'){
+          if (!args.length)
+            return message.channel.send(`Provide valid argument, ${message.author}!`);
           if(validateEmail(args[0])){
             const user = await User.findOne({email: args[0]});
             if(user){
