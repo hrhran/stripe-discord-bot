@@ -7,8 +7,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const port = process.env.PORT || 5005
 const client = require("./config/bot");
-const { off } = require("./models/userModel");
-const e = require("express");
+
 
 
 const app = express()
@@ -189,6 +188,7 @@ client.on("ready", (c) => {
   })
   client.on('guildMemberAdd', member => {
     member.send(`${member.toString()}, Welcome to the tradewithMAK server!\nPlease share your e-mail address by replying to this message:`);
+    client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${member.toString()} was sent welcome message.`)
  });
 
 });
