@@ -187,8 +187,11 @@ client.on("ready", (c) => {
     }
   })
   client.on('guildMemberAdd', member => {
-    member.send(`${member.toString()}, Welcome to the tradewithMAK server!\nPlease share your e-mail address by replying to this message:`);
-    client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${member.toString()} was sent welcome message.`)
+    member.send(`${member.toString()}, Welcome to the tradewithMAK server!\nPlease share your e-mail address by replying to this message:`).then(()=>{
+      client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${member.toString()} was sent welcome message.`)
+    }).catch((err) =>{
+      client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`<@&914904220350697493>, Could not send welcome message to ${member.toString()}.`)
+    })
  });
 
 });
