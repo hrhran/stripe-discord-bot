@@ -8,7 +8,7 @@ const sendWelcomeMail= (user) =>{
       transporter.sendMail({
         from: "contact@tradewithmak.com",
         to: mailList,
-        subject: `Welcome to tradewithMAK`,
+        subject: `tradewithMAK - Refer and Earn`,
         html: constants.welcomeMail(user),
       });
 }
