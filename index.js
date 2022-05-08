@@ -74,14 +74,13 @@ client.on("ready", (c) => {
         guild.members.fetch().then((member) => {
           member.forEach(async (m)=> {
             if (m.user.username+"#"+m.user.discriminator === tag) {
-              m.send(`${member.toString()}, Welcome to the tradewithMAK server!\nLink your e-mail address and discord account to access subscription features.\n\nPlease share your e-mail address by replying to this message:`).then(()=>{
+              m.send(`${m.user.toString()}, Welcome to the tradewithMAK server!\nLink your e-mail address and discord account to access subscription features.\n\nPlease share your e-mail address by replying to this message:`).then(()=>{
                 return message.channel.send(process.env.LOG_CHANNEL_ID).send(`${member.toString()} was sent welcome message.`)
               }).catch((err) =>{
                 return message.channel.send(process.env.LOG_CHANNEL_ID).send(`Could not send welcome message to ${member.toString()}.`)
               })
             }
           })
-          return message.channel.send(`User has to be in the discord server.`);
         })
       }
 
