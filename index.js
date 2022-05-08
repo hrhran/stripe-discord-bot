@@ -33,7 +33,7 @@ client.on("ready", (c) => {
     if (message.author.bot) return;
     if (message.author.id === client.user.id) return;
 
-    if (message.channelId === process.env.LOG_CHANNEL_ID) {
+    if (message.channelId === process.env.QUERY_CHANNEL_ID) {
       const args = message.content.split(" ");
       const command = args.shift().toLowerCase();
       if(command === 'whois'){
