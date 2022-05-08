@@ -34,7 +34,7 @@ client.on("ready", (c) => {
     if (message.author.id === client.user.id) return;
 
     if (message.channelId === process.env.LOG_CHANNEL_ID) {
-      const args = message.content.split(" ");
+      const args = message.content.trim().split(/[ ]+/);
       const command = args.shift().toLowerCase();
       if(command === 'whois'){
         if (!args.length)
@@ -84,10 +84,10 @@ client.on("ready", (c) => {
             }
             else{
               return message.channel.send(`No members are currently trialing, ${message.author}!`);
-            } 
+            }
           }catch(err){
             return message.channel.send(`Error while fetching data, ${message.author}!`);
-          }   
+          }
         }
       }
 
