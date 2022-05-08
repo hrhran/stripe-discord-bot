@@ -77,7 +77,6 @@ const listenHook = asyncHandler(async (req, res) => {
                   console.log('User linked but not in discord server')
                 })
                 inServer.roles.remove(process.env.ROLE_ID)
-                inServer.kick();
             }
             client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} 's subscription period has ended, has been kicked.`)
           }
