@@ -45,6 +45,14 @@ const listenHook = asyncHandler(async (req, res) => {
             user.inTrial = true
             user.endDate = new Date(data.current_period_end * 1000)
             await user.save()
+            if(user.discord_id !== ''){
+              const guild = client.guilds.cache.get(process.env.GUILD_ID);
+              const inServer = await guild.members.fetch(user.discord_id).catch(() => {
+                console.log('User linked but not in discord server')
+              })
+              inServer.roles.add(process.env.ROLE_ID)
+            }
+
             //mailUser.sendWelcomeMail(user)
             client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has started their trial period - ends on ${user.endDate.toString().split('+')[0]}.`)
           }
@@ -65,7 +73,9 @@ const listenHook = asyncHandler(async (req, res) => {
             await user.save()
             if(user.discord_id !== ''){
                 const guild = client.guilds.cache.get(process.env.GUILD_ID);
-                const inServer = await guild.members.fetch(user.discord_id)
+                const inServer = await guild.members.fetch(user.discord_id).catch(() => {
+                  console.log('User linked but not in discord server')
+                })
                 inServer.roles.remove(process.env.ROLE_ID)
                 inServer.kick();
             }

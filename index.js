@@ -69,6 +69,22 @@ client.on("ready", (c) => {
         }
       }
 
+      if(command === 'welcome'){
+        const tag = args.join(" ")
+        guild.members.fetch().then((member) => {
+          member.forEach(async (m)=> {
+            if (m.user.username+"#"+m.user.discriminator === tag) {
+              m.send(`${member.toString()}, Welcome to the tradewithMAK server!\nLink your e-mail address and discord account to access subscription features.\n\nPlease share your e-mail address by replying to this message:`).then(()=>{
+                return message.channel.send(process.env.LOG_CHANNEL_ID).send(`${member.toString()} was sent welcome message.`)
+              }).catch((err) =>{
+                return message.channel.send(process.env.LOG_CHANNEL_ID).send(`Could not send welcome message to ${member.toString()}.`)
+              })
+            }
+          })
+          return message.channel.send(`User has to be in the discord server.`);
+        })
+      }
+
       if(command === 'whoare'){
         if (!args.length)
           return message.channel.send(`Provide valid argument, ${message.author}!`);
@@ -169,40 +185,41 @@ client.on("ready", (c) => {
         }
       }
       if(inServer){
-        const email = message.content;
+        const email = message.content.toLowerCase();
         if(validateEmail(email)){
           try{
-            const hasRole = guild.members.cache
-            .get(message.author.id).roles.cache
-            .some(role => role.name === 'paid');
-            console.log(hasRole)
-            if(!hasRole){
+            // const hasRole = guild.members.cache
+            // .get(message.author.id).roles.cache
+            // .some(role => role.name === 'paid');
+            // console.log(hasRole)
+            const userById = await User.findOne({discord_id:message.author.id});
+            if(!userById){
               const user = await User.findOne({email:email});
               if(user){
                 if(user.discord_id === message.author.id){
-                  message.author.send(`This e-mail is already active with your account.`)
+                  message.author.send(`E-mail already linked with your discord account.`)
                 }else if(user.discord_id !== ''){
                   message.author.send(`E-mail already associated with a different discord account. If you have any further queries, please message in #lounge-support of tradewithmak discord server, our moderators will help you.`)
                 }else{
+                  user.discord_id = message.author.id;
+                  user.save()
                   if(user.subscribed === false){
-                    message.author.send(`Please enter your e-mail again after completing your payment. If you have any further queries, please message in #lounge-support of tradewithmak discord server, our moderators will help you.`)
+                    message.author.send(`${message.author.toString()} This e-mail address is now linked with your discord account. Once you complete the subscription payment, you will be able access everything in discord.`)
                   }else{
-                    user.discord_id = message.author.id;
-                    user.save()
                     inServer.roles.add(process.env.ROLE_ID)
-                    message.author.send(`${message.author.toString()} Your discord account is active now! You will be able to `+
+                    message.author.send(`${message.author.toString()} Your discord account is activated. You will be able to `+
                     `access everything in discord server. This e-mail address is now linked with your discord account. `)
                     client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} is now linked to ${message.author.toString()}`)
                   }
                 }
               }else{
-                  message.author.send(`We could not find any account with your e-mail address. In order to access all features, `+
-                    `please subscribe to our service here:\ndashboard.tradewithmak.com/signup\n\nIf `+
+                  message.author.send(`We could not find any account with your e-mail address. Please register here:\n **dashboard.tradewithmak.com/signup**\nAfter registration, reply with your e-mail address once again.  In order to access all features, `+
+                    `please subscribe to our service after registration.\n\nIf `+
                     `you have any further inquiries, please post a message in the #lounge-support `+
                     `channel or email us at contact@tradewithMAK.com; one of our moderators will help you. `)
               }
             }else{
-              message.author.send(`Your account is already active.`)
+              message.author.send(`Your account is already linked with an E-mail address.\nIf you have any further queries, please message in #lounge-support of tradewithmak discord server, our moderators will help you.`)
             }
           }catch(err){
             console.log(err)
@@ -213,7 +230,7 @@ client.on("ready", (c) => {
     }
   })
   client.on('guildMemberAdd', member => {
-    member.send(`${member.toString()}, Welcome to the tradewithMAK server!\nPlease share your e-mail address by replying to this message:`).then(()=>{
+    member.send(`${member.toString()}, Welcome to the tradewithMAK server!\nLink your e-mail address and discord account to access subscription features.\n\nPlease share your e-mail address by replying to this message:`).then(()=>{
       client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${member.toString()} was sent welcome message.`)
     }).catch((err) =>{
       client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`<@&914904220350697493>, Could not send welcome message to ${member.toString()}.`)
