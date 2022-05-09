@@ -75,9 +75,9 @@ client.on("ready", (c) => {
           member.forEach(async (m)=> {
             if (m.user.username+"#"+m.user.discriminator === tag) {
               m.send(`${m.user.toString()}, Welcome to the tradewithMAK server!\nLink your e-mail address and discord account to access subscription features.\n\nPlease share your e-mail address by replying to this message:`).then(()=>{
-                return message.channel.send(process.env.LOG_CHANNEL_ID).send(`${member.toString()} was sent welcome message.`)
+                return message.channel.send(process.env.LOG_CHANNEL_ID).send(`${m.user.toString()} was sent welcome message.`)
               }).catch((err) =>{
-                return message.channel.send(process.env.LOG_CHANNEL_ID).send(`Could not send welcome message to ${member.toString()}.`)
+                return message.channel.send(process.env.LOG_CHANNEL_ID).send(`Could not send welcome message to ${m.user.toString()}.`)
               })
             }
           })
