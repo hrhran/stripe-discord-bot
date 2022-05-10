@@ -20,6 +20,7 @@ const listenHook = asyncHandler(async (req, res) => {
 
     const data = event.data.object
     console.log(event.type, data)
+    const guild = client.guilds.cache.get(process.env.GUILD_ID);
     switch (event.type) {
       case 'customer.created':{
         try{
@@ -46,11 +47,10 @@ const listenHook = asyncHandler(async (req, res) => {
             user.endDate = new Date(data.current_period_end * 1000)
             await user.save()
             if(user.discord_id !== ''){
-              const guild = client.guilds.cache.get(process.env.GUILD_ID);
               const inServer = await guild.members.fetch(user.discord_id).catch(() => {
                 console.log('User linked but not in discord server')
               })
-              inServer.roles.add(process.env.ROLE_ID)
+              inServer.roles.add(process.env.TRIAL_ROLE_ID)
             }
 
             //mailUser.sendWelcomeMail(user)
@@ -72,13 +72,13 @@ const listenHook = asyncHandler(async (req, res) => {
             user.endDate= null
             await user.save()
             if(user.discord_id !== ''){
-                const guild = client.guilds.cache.get(process.env.GUILD_ID);
                 const inServer = await guild.members.fetch(user.discord_id).catch(() => {
                   console.log('User linked but not in discord server')
                 })
-                inServer.roles.remove(process.env.ROLE_ID)
+                inServer.roles.remove(process.env.PAID_ROLE_ID)
+                inServer.roles.remove(process.env.TRIAL_ROLE_ID)
             }
-            client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} 's subscription period has ended, has been kicked.`)
+            client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} 's subscription period has ended.`)
           }
           break
         }catch(err){
@@ -95,8 +95,11 @@ const listenHook = asyncHandler(async (req, res) => {
             const prevDate = user.endDate;
             if (isOnTrial) {
               user.inTrial = true
+              inServer.roles.add(process.env.TRIAL_ROLE_ID)
             } else if (data.status === 'active') {
               user.inTrial = false
+              inServer.roles.remove(process.env.TRIAL_ROLE_ID)
+              inServer.roles.add(process.env.PAID_ROLE_ID)
             }
             user.endDate = new Date(data.current_period_end * 1000)
             await user.save()

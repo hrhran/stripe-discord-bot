@@ -122,7 +122,7 @@ client.on("ready", (c) => {
                   user.save()
                   try{
                   if(user.subscribed){
-                    m.roles.add(process.env.ROLE_ID)
+                    m.roles.add(process.env.PAID_ROLE_ID)
                   }}catch(err){console.log(err)}
                   flag = true
                   return message.channel.send(`Successfully linked.`);
@@ -152,7 +152,7 @@ client.on("ready", (c) => {
               }else{
                 try{
                 const inServer = await guild.members.fetch(user.discord_id)
-                inServer.roles.remove(process.env.ROLE_ID)
+                inServer.roles.remove(process.env.PAID_ROLE_ID)
                 }catch(err){console.log(err)}
                 user.discord_id=''
                 user.save()
@@ -176,7 +176,7 @@ client.on("ready", (c) => {
         if(user){
           user.discord_id=''
           user.save()
-          inServer.roles.remove(process.env.ROLE_ID)
+          inServer.roles.remove(process.env.PAID_ROLE_ID)
           message.author.send(`Account unlinked from: ${user.email}`)
           client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} is now unlinked from ${message.author.toString()}`)
         }else{
@@ -205,17 +205,18 @@ client.on("ready", (c) => {
                   if(user.subscribed === false){
                     message.author.send(`${message.author.toString()} This e-mail address is now linked with your discord account. Once you complete the subscription payment, you will be able access everything in discord.`)
                   }else{
-                    inServer.roles.add(process.env.ROLE_ID)
+                    inServer.roles.add(process.env.PAID_ROLE_ID)
                     message.author.send(`${message.author.toString()} Your discord account is activated. You will be able to `+
                     `access everything in discord server. This e-mail address is now linked with your discord account. `)
-                    client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} is now linked to ${message.author.toString()}`)
                   }
+                  client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} is now linked to ${message.author.toString()}`)
                 }
               }else{
                   message.author.send(`We could not find any account with your e-mail address. Please register here:\n **dashboard.tradewithmak.com/signup**\nAfter registration, reply with your e-mail address once again.  In order to access all features, `+
                     `please subscribe to our service after registration.\n\nIf `+
                     `you have any further inquiries, please post a message in the #lounge-support `+
                     `channel or email us at contact@tradewithMAK.com; one of our moderators will help you. `)
+                    client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${message.author.toString()} tried to link before signing up, bot replied with instructions.`)
               }
             }else{
               message.author.send(`Your account is already linked with an E-mail address.\nIf you have any further queries, please message in #lounge-support of tradewithmak discord server, our moderators will help you.`)
