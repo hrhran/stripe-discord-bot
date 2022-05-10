@@ -122,8 +122,14 @@ client.on("ready", (c) => {
                   user.save()
                   try{
                   if(user.subscribed){
-                    m.roles.add(process.env.PAID_ROLE_ID)
-                  }}catch(err){console.log(err)}
+                    if(user.inTrial){
+                      inServer.roles.add(process.env.TRIAL_ROLE_ID)
+                      inServer.roles.add(process.env.PAID_ROLE_ID)
+                    }else{
+                      inServer.roles.add(process.env.PAID_ROLE_ID)
+                    }
+                  }
+                }catch(err){console.log(err)}
                   flag = true
                   return message.channel.send(`Successfully linked.`);
                 }
@@ -153,6 +159,7 @@ client.on("ready", (c) => {
                 try{
                 const inServer = await guild.members.fetch(user.discord_id)
                 inServer.roles.remove(process.env.PAID_ROLE_ID)
+                inServer.roles.remove(process.env.TRIAL_ROLE_ID)
                 }catch(err){console.log(err)}
                 user.discord_id=''
                 user.save()
@@ -205,7 +212,12 @@ client.on("ready", (c) => {
                   if(user.subscribed === false){
                     message.author.send(`${message.author.toString()} This e-mail address is now linked with your discord account. Once you complete the subscription payment, you will be able access everything in discord.`)
                   }else{
-                    inServer.roles.add(process.env.PAID_ROLE_ID)
+                    if(user.inTrial){
+                      inServer.roles.add(process.env.TRIAL_ROLE_ID)
+                      inServer.roles.add(process.env.PAID_ROLE_ID)
+                    }else{
+                      inServer.roles.add(process.env.PAID_ROLE_ID)
+                    }
                     message.author.send(`${message.author.toString()} Your discord account is activated. You will be able to `+
                     `access everything in discord server. This e-mail address is now linked with your discord account. `)
                   }

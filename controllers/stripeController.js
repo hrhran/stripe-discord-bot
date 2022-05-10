@@ -51,6 +51,7 @@ const listenHook = asyncHandler(async (req, res) => {
                 console.log('User linked but not in discord server')
               })
               inServer.roles.add(process.env.TRIAL_ROLE_ID)
+              inServer.roles.add(process.env.PAID_ROLE_ID)
             }
 
             //mailUser.sendWelcomeMail(user)
@@ -96,6 +97,7 @@ const listenHook = asyncHandler(async (req, res) => {
             if (isOnTrial) {
               user.inTrial = true
               inServer.roles.add(process.env.TRIAL_ROLE_ID)
+              inServer.roles.add(process.env.PAID_ROLE_ID)
             } else if (data.status === 'active') {
               user.inTrial = false
               inServer.roles.remove(process.env.TRIAL_ROLE_ID)
