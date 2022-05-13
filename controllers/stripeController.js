@@ -46,7 +46,7 @@ const listenHook = asyncHandler(async (req, res) => {
             user.inTrial = true
             user.endDate = new Date(data.current_period_end * 1000)
             await user.save()
-            if(user.discord_id !== ''){
+            if(user.discord_id !== '' && user.subscribed){
               const inServer = await guild.members.fetch(user.discord_id).catch(() => {
                 console.log('User linked but not in discord server')
               })
