@@ -3,6 +3,7 @@ const User = require('../models/userModel')
 const client = require('../config/bot')
 const stripe = require('stripe')
 const mailUser = require('../helpers/mailUser')
+const logger = require('../config/logger')
 
 const Stripe = stripe(
   process.env.STRIPE_SECRET_KEY, {
@@ -14,12 +15,12 @@ const listenHook = asyncHandler(async (req, res) => {
     try {
       event = Stripe.webhooks.constructEvent(req.body, req.header('Stripe-Signature'),process.env.WEBHOOK_KEY)
     } catch (err) {
-      console.log(err)
+      logger.error('Error getting event from stripe.\n'+err)
       return res.sendStatus(400)
     }
 
     const data = event.data.object
-    console.log(event.type, data)
+    //console.log(event.type, data)
     const guild = client.guilds.cache.get(process.env.GUILD_ID);
     switch (event.type) {
       case 'customer.created':{
@@ -27,13 +28,14 @@ const listenHook = asyncHandler(async (req, res) => {
           setTimeout(async()=>{
             const user = await User.findOne({ email: data.email })
             if(user){
+              logger.info('customer.created event received for user: '+user.email)
               client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${data.email} has signed up.`)
               mailUser.sendWelcomeMail(user)
             }  
             console.log(JSON.stringify(data))
           },2250)
         }catch(err){
-          console.log(err)
+          logger.error('Error during customer.created for '+data.email+'\n'+err)
         }
         break
       }
@@ -42,6 +44,7 @@ const listenHook = asyncHandler(async (req, res) => {
         try{
           const user = await User.findOne({ billingID: data.customer })
           if(user){
+            logger.info('customer.subscription.created event received for user: '+user.email)
             user.subscribed = true
             user.inTrial = true
             user.endDate = new Date(data.current_period_end * 1000)
@@ -60,7 +63,7 @@ const listenHook = asyncHandler(async (req, res) => {
           break
         }
         catch(err){
-          console.log(err)
+          logger.error('Error during customer.subscription.created for '+data.email+'\n'+err)
           break
         }
       }
@@ -68,6 +71,7 @@ const listenHook = asyncHandler(async (req, res) => {
         try{
           const user = await User.findOne({ billingID: data.customer })
           if(user){
+            logger.info('customer.subscription.deleted event received for user: '+user.email)
             user.subscribed = false
             user.inTrial = false
             user.endDate= null
@@ -83,7 +87,7 @@ const listenHook = asyncHandler(async (req, res) => {
           }
           break
         }catch(err){
-          console.log(err)
+          logger.error('Error during customer.subscription.deleted for '+data.email+'\n'+err)
           break
         }
       }
@@ -96,6 +100,7 @@ const listenHook = asyncHandler(async (req, res) => {
             console.log('User linked but not in discord server')
           })
           if(user){
+            logger.info('customer.subscription.updated event received for user: '+user.email)
             const prevDate = user.endDate;
             if (isOnTrial) {
               user.inTrial = true
@@ -118,7 +123,7 @@ const listenHook = asyncHandler(async (req, res) => {
           }
           break;
         }catch(err){
-          console.log(err)
+          logger.error('Error during customer.subscription.updated for '+data.email+'\n'+err)
           break
         }
     }

@@ -7,6 +7,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const port = process.env.PORT || 5005
 const client = require("./config/bot");
+const logger = require('./config/logger')
 
 
 
@@ -34,7 +35,7 @@ client.on("ready", (c) => {
     if (message.author.id === client.user.id) return;
 
     if (message.channelId === process.env.QUERY_CHANNEL_ID) {
-      const args = message.content.split(" ");
+      const args = message.content.trim().split(/[ ]+/);
       const command = args.shift().toLowerCase();
       if(command === 'whois'){
         if (!args.length)
@@ -174,7 +175,7 @@ client.on("ready", (c) => {
 
 
     if (message.channel.type === "DM") {
-
+      logger.info(message.author.tag+" sent DM to bot with message:\n"+message.content)
       const inServer = await guild.members.fetch(message.author.id).catch(() => {
         message.author.send("You must be part of tradewithMAK server.")
       })
@@ -234,7 +235,7 @@ client.on("ready", (c) => {
               message.author.send(`Your account is already linked with an E-mail address.\nIf you have any further queries, please message in #lounge-support of tradewithmak discord server, our moderators will help you.`)
             }
           }catch(err){
-            console.log(err)
+            logger.info('Error while linking '+email+' and '+message.author.tag)
           }
         }
       }
