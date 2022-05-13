@@ -92,16 +92,15 @@ const listenHook = asyncHandler(async (req, res) => {
         try{
           const user = await User.findOne({ billingID: data.customer })
           const isOnTrial = data.status === 'trialing'
+          const inServer = await guild.members.fetch(user.discord_id).catch(() => {
+            console.log('User linked but not in discord server')
+          })
           if(user){
             const prevDate = user.endDate;
             if (isOnTrial) {
               user.inTrial = true
-              inServer.roles.add(process.env.TRIAL_ROLE_ID)
-              inServer.roles.add(process.env.PAID_ROLE_ID)
             } else if (data.status === 'active') {
               user.inTrial = false
-              inServer.roles.remove(process.env.TRIAL_ROLE_ID)
-              inServer.roles.add(process.env.PAID_ROLE_ID)
             }
             user.endDate = new Date(data.current_period_end * 1000)
             await user.save()
@@ -111,6 +110,13 @@ const listenHook = asyncHandler(async (req, res) => {
               client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has decided to renew/continue their subscription - ends on ${user.endDate.toString().split('+')[0]}.`)
             }else{
               client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has started their next billing period till ${user.endDate.toString().split('+')[0]}.`)
+            }
+            if (isOnTrial) {
+              inServer.roles.add(process.env.TRIAL_ROLE_ID)
+              inServer.roles.add(process.env.PAID_ROLE_ID)
+            } else if (data.status === 'active') {
+              inServer.roles.remove(process.env.TRIAL_ROLE_ID)
+              inServer.roles.add(process.env.PAID_ROLE_ID)
             }
           }
           break;
