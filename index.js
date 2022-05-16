@@ -44,7 +44,7 @@ client.on("ready", (c) => {
           const user = await User.findOne({email:args[0]});
           if(user){
             const isUser = client.users.cache.get(user.discord_id)
-            return message.channel.send(`${message.author},\n**Email:** ${user.email}\n**Subscribed:** ${(user.subscribed)?"Yes":"No"}\n**In Trial:** ${(user.inTrial)?"Yes":"No"}\n**Discord Acc:** ${(user.discord_id!=='')?"<@"+user.discord_id+">":"Not linked"}${(isUser && user.discord_id!=='')?"\n**Discord Tag**: "+isUser.tag:""}\n**Name:** ${user.name}\n**Twitter:** ${(user.twitter!=='')?user.twitter:"null"}\n**Exp:** ${user.experience}\n**Acc size:** ${user.acc_size}\n**End/Billing Date:** ${user.endDate.toString().split('(')[0]}`);
+            return message.channel.send(`${message.author},\n**Email:** ${user.email}\n**Subscribed:** ${(user.subscribed)?"Yes":"No"}\n**In Trial:** ${(user.inTrial)?"Yes":"No"}\n**Discord Acc:** ${(user.discord_id!=='')?"<@"+user.discord_id+">":"Not linked"}${(isUser && user.discord_id!=='')?"\n**Discord Tag**: "+isUser.tag:""}\n**Name:** ${user.name}\n**Twitter:** ${(user.twitter!=='')?user.twitter:"null"}\n**Exp:** ${user.experience}\n**Acc size:** ${user.acc_size}\n**End/Billing Date:** ${(user.endDate!==null)?user.endDate.toString().split('(')[0]:"null"}`);
           }
           else
             return message.channel.send(`No such user in database.`);
@@ -57,7 +57,7 @@ client.on("ready", (c) => {
                   const user = await User.findOne({discord_id:m.user.id})
                   if(user){
                     const isUser = client.users.cache.get(user.discord_id)
-                    return message.channel.send(`${message.author},\n**Email:** ${user.email}\n**Subscribed:** ${(user.subscribed)?"Yes":"No"}\n**In Trial:** ${(user.inTrial)?"Yes":"No"}\n**Discord Acc:** ${(user.discord_id!=='')?"<@"+user.discord_id+">":"Not linked"}${(isUser && user.discord_id!=='')?"\n**Discord Tag**: "+isUser.tag:""}\n**Name:** ${user.name}\n**Twitter:** ${(user.twitter!=='')?user.twitter:"null"}\n**Exp:** ${user.experience}\n**Acc size:** ${user.acc_size}\n**End/Billing Date:** ${user.endDate.split('+')[0]}`);
+                    return message.channel.send(`${message.author},\n**Email:** ${user.email}\n**Subscribed:** ${(user.subscribed)?"Yes":"No"}\n**In Trial:** ${(user.inTrial)?"Yes":"No"}\n**Discord Acc:** ${(user.discord_id!=='')?"<@"+user.discord_id+">":"Not linked"}${(isUser && user.discord_id!=='')?"\n**Discord Tag**: "+isUser.tag:""}\n**Name:** ${user.name}\n**Twitter:** ${(user.twitter!=='')?user.twitter:"null"}\n**Exp:** ${user.experience}\n**Acc size:** ${user.acc_size}\n**End/Billing Date:** ${(user.endDate!==null)?user.endDate.toString().split('(')[0]:"null"}`);
                   }
                   else
                     return message.channel.send(`No linked account found for the user.`);
@@ -94,7 +94,7 @@ client.on("ready", (c) => {
             if(res.length){
                 let str=''
                 for(let i = 0; i < res.length; i++) {
-                    str += res[i].email + ' - ' + ((res[i].discord_id)?'<@'+res[i].discord_id+'>':'Not Linked') + " - " + res[i].endDate.toString().split('(')[0] + '\n'
+                    str += res[i].email + ' - ' + ((res[i].discord_id)?'<@'+res[i].discord_id+'>':'Not Linked') + " - " + (res[i].endDate!==null?res[i].endDate.toString().split('(')[0]:"null") + '\n'
                   }
                   return message.channel.send(`${message.author}, Trial Users:\n${str}`);
             }
