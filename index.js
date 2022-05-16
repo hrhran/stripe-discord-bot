@@ -94,7 +94,7 @@ client.on("ready", (c) => {
             if(res.length){
                 let str=''
                 for(let i = 0; i < res.length; i++) {
-                    str += res[i].email + ' - ' + ((res[i].discord_id)?'<@'+res[i].discord_id+'>':'Not Linked') + '-' + res[i].endDate.toString().split('(')[0] + '\n'
+                    str += res[i].email + ' - ' + ((res[i].discord_id)?'<@'+res[i].discord_id+'>':'Not Linked') + " - " + res[i].endDate.toString().split('(')[0] + '\n'
                   }
                   return message.channel.send(`${message.author}, Trial Users:\n${str}`);
             }
