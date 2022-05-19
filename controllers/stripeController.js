@@ -41,8 +41,9 @@ const listenHook = asyncHandler(async (req, res) => {
       }
   
       case 'customer.subscription.created': {
+        const user = await User.findOne({ billingID: data.customer })
         try{
-          const user = await User.findOne({ billingID: data.customer })
+          //const user = await User.findOne({ billingID: data.customer })
           if(user){
             logger.info('customer.subscription.created event received for user: '+user.email)
             user.subscribed = true
@@ -63,13 +64,14 @@ const listenHook = asyncHandler(async (req, res) => {
           break
         }
         catch(err){
-          logger.error('Error during customer.subscription.created for '+data.email+'\n'+err)
+          logger.error('Error during customer.subscription.created for '+user.email+'\n'+err)
           break
         }
       }
       case 'customer.subscription.deleted': {
+        const user = await User.findOne({ billingID: data.customer })
         try{
-          const user = await User.findOne({ billingID: data.customer })
+          //const user = await User.findOne({ billingID: data.customer })
           if(user){
             logger.info('customer.subscription.deleted event received for user: '+user.email)
             user.subscribed = false
@@ -87,29 +89,26 @@ const listenHook = asyncHandler(async (req, res) => {
           }
           break
         }catch(err){
-          logger.error('Error during customer.subscription.deleted for '+data.email+'\n'+err)
+          logger.error('Error during customer.subscription.deleted for '+user.email+'\n'+err)
           break
         }
       }
 
       case "customer.subscription.updated":{
+        const user = await User.findOne({ billingID: data.customer })
         try{
-          const user = await User.findOne({ billingID: data.customer })
+          //const user = await User.findOne({ billingID: data.customer })
           const isOnTrial = data.status === 'trialing'
-          const inServer = await guild.members.fetch(user.discord_id).catch(() => {
-            console.log('User linked but not in discord server')
-          })
           if(user){
             logger.info('customer.subscription.updated event received for user: '+user.email)
+            const inServer = await guild.members.fetch(user.discord_id).catch(() => {
+              console.log('User linked but not in discord server')
+            })
             const prevDate = user.endDate;
             if (isOnTrial) {
               user.inTrial = true
-              inServer.roles.add(process.env.TRIAL_ROLE_ID)
-              inServer.roles.add(process.env.PAID_ROLE_ID)
             } else if (data.status === 'active') {
               user.inTrial = false
-              inServer.roles.remove(process.env.TRIAL_ROLE_ID)
-              inServer.roles.add(process.env.PAID_ROLE_ID)
             }
             user.endDate = new Date(data.current_period_end * 1000)
             await user.save()
@@ -120,10 +119,17 @@ const listenHook = asyncHandler(async (req, res) => {
             }else{
               client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has started their next billing period till ${user.endDate.toString().split('+')[0]}.`)
             }
+            if (isOnTrial) {
+              inServer.roles.add(process.env.TRIAL_ROLE_ID)
+              inServer.roles.add(process.env.PAID_ROLE_ID)
+            } else if (data.status === 'active') {
+              inServer.roles.add(process.env.PAID_ROLE_ID)
+              inServer.roles.remove(process.env.TRIAL_ROLE_ID)
+            }
           }
           break;
         }catch(err){
-          logger.error('Error during customer.subscription.updated for '+data.email+'\n'+err)
+          logger.error('Error during customer.subscription.updated for '+user.email+'\n'+err)
           break
         }
     }
