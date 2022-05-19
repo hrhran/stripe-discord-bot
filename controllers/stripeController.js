@@ -115,7 +115,7 @@ const listenHook = asyncHandler(async (req, res) => {
             if(data.cancel_at_period_end){
               client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has cancelled their subscription - ends on ${user.endDate.toString().split('+')[0]}.`)
             }else if(data.status === 'past_due'){
-              client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`<@&914904220350697493>, ${user.email} is now past due - supposed to end on ${user.endDate.toString().split('+')[0]}.`)
+              client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`<@&914904220350697493>, ${user.email} is now past due for next billing period till ${user.endDate.toString().split('+')[0]}.`)
             }else if(new Date(prevDate).getTime() === data.current_period_end * 1000 && !data.cancel_at_period_end){
               client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has decided to renew/continue their subscription - ends on ${user.endDate.toString().split('+')[0]}.`)
             }else{
