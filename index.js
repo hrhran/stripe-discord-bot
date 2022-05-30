@@ -175,7 +175,7 @@ client.on("ready", (c) => {
 
 
     if (message.channel.type === "DM") {
-      logger.info(message.author.tag+" sent DM to bot with message:\n"+message.content)
+      logger.info(message.author.tag+" sent DM to bot with message: "+message.content)
       const inServer = await guild.members.fetch(message.author.id).catch(() => {
         message.author.send("You must be part of tradewithMAK server.")
       })

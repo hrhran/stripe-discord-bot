@@ -121,12 +121,15 @@ const listenHook = asyncHandler(async (req, res) => {
             }else{
               client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${user.email} has started their next billing period till ${user.endDate.toString().split('+')[0]}.`)
             }
-            if (isOnTrial) {
-              inServer.roles.add(process.env.TRIAL_ROLE_ID)
-              inServer.roles.add(process.env.PAID_ROLE_ID)
-            } else if (data.status === 'active') {
-              inServer.roles.add(process.env.PAID_ROLE_ID)
-              inServer.roles.remove(process.env.TRIAL_ROLE_ID)
+            
+            if(inServer.roles){
+              if (isOnTrial) {
+                inServer.roles.add(process.env.TRIAL_ROLE_ID)
+                inServer.roles.add(process.env.PAID_ROLE_ID)
+              } else if (data.status === 'active') {
+                inServer.roles.add(process.env.PAID_ROLE_ID)
+                inServer.roles.remove(process.env.TRIAL_ROLE_ID)
+              }
             }
           }
           break;
