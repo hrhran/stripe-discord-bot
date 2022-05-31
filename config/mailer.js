@@ -5,7 +5,7 @@ module.exports = nodemailer.createTransport({
   auth: {
     //sending from a Gmail account
     user: "contact@tradewithmak.com",
-    pass: "ibrsdvjcwaumzrig",
+    pass: "jmwygkdqrefzgiwr",
   },
 });
 

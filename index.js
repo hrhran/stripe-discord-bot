@@ -123,6 +123,7 @@ client.on("ready", (c) => {
                   user.save()
                   try{
                   if(user.subscribed){
+                    const inServer = await guild.members.fetch(m.user.id)
                     if(user.inTrial){
                       inServer.roles.add(process.env.TRIAL_ROLE_ID)
                       inServer.roles.add(process.env.PAID_ROLE_ID)
