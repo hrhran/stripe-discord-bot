@@ -243,12 +243,21 @@ client.on("ready", (c) => {
 
     }
   })
-  client.on('guildMemberAdd', member => {
+  client.on('guildMemberAdd', async member => {
     member.send(`${member.toString()}, Welcome to the tradewithMAK server!\nLink your e-mail address and discord account to access subscription features.\n\nPlease share your e-mail address by replying to this message:`).then(()=>{
       client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`${member.toString()} was sent welcome message.`)
     }).catch((err) =>{
-      client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`<@&914904220350697493>, Could not send welcome message to ${member.toString()}.`)
+      return client.channels.cache.get(process.env.LOG_CHANNEL_ID).send(`<@&914904220350697493>, Could not send welcome message to ${member.toString()}.`)
     })
+    const userById = await User.findOne({discord_id:member.id});
+    if(userById && userById.subscribed){
+      if(userById.inTrial){
+        member.roles.add(process.env.TRIAL_ROLE_ID)
+        member.roles.add(process.env.PAID_ROLE_ID)
+      }else{
+        member.roles.add(process.env.PAID_ROLE_ID)
+      }
+    }
  });
 
 });
