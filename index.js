@@ -177,6 +177,7 @@ client.on("ready", (c) => {
 
     if (message.channel.type === "DM") {
       logger.info(message.author.tag+" sent DM to bot with message: "+message.content)
+      client.channels.cache.get(process.env.CHATLOG_CHANNEL_ID).send(`${message.author.toString()} (${message.author.tag}): ${message.content}`)
       const inServer = await guild.members.fetch(message.author.id).catch(() => {
         message.author.send("You must be part of tradewithMAK server.")
       })
@@ -212,7 +213,7 @@ client.on("ready", (c) => {
                   user.discord_id = message.author.id;
                   user.save()
                   if(user.subscribed === false){
-                    message.author.send(`${message.author.toString()} This e-mail address is now linked with your discord account. Once you complete the subscription payment, you will be able access everything in discord.`)
+                    message.author.send(`${message.author.toString()} This e-mail address is now linked with your discord account. Once you complete the subscription payment, you will be able to access everything in discord.`)
                   }else{
                     if(user.inTrial){
                       inServer.roles.add(process.env.TRIAL_ROLE_ID)
